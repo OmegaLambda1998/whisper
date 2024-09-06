@@ -11,7 +11,7 @@ from tqdm import tqdm
 from .audio import load_audio, log_mel_spectrogram, pad_or_trim
 from .decoding import DecodingOptions, DecodingResult, decode, detect_language
 from .model import ModelDimensions, Whisper
-from .transcribe import transcribe
+from .transcribe import transcribe, cli
 from .version import __version__
 
 _MODELS = {
@@ -154,3 +154,7 @@ def load_model(
         model.set_alignment_heads(alignment_heads)
 
     return model.to(device)
+
+
+def main():
+    cli()

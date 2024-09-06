@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import traceback
 import warnings
 from typing import TYPE_CHECKING, List, Optional, Tuple, Union
@@ -576,7 +577,6 @@ def cli():
 
     model = load_model(model_name, device=device, download_root=model_dir)
 
-    writer = get_writer(output_format, output_dir)
     word_options = [
         "highlight_words",
         "max_line_count",
@@ -593,6 +593,11 @@ def cli():
         warnings.warn("--max_words_per_line has no effect with --max_line_width")
     writer_args = {arg: args.pop(arg) for arg in word_options}
     for audio_path in args.pop("audio"):
+        audio_output = os.path.join(
+            output_dir, os.path.basename(audio_path).split(".")[0], model_name
+        )
+        os.makedirs(audio_output, exist_ok=True)
+        writer = get_writer(output_format, audio_output)
         try:
             result = transcribe(model, audio_path, temperature=temperature, **args)
             writer(result, audio_path, **writer_args)
